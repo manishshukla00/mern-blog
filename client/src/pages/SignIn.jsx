@@ -1,11 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 const Signin = () => {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,27 +21,25 @@ const Signin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !password) {
-      return setErrorMessage("Please fill out all fields.");
+      return dispatch("Please fill out all fields.");
     }
     try {
-      setLoading(true);
-      setErrorMessage(false);
-      const res = await fetch("/api/auth/Signin", {
+      dispatch(signInStart());
+      const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       const data = await res.json();
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        return dispatch(signInFailure(data.message));
       }
-      setLoading(false);
       if (res.ok) {
-        navigate("/");
+        return dispatch(signInSuccess(data));
       }
+      navigate("/");
     } catch (error) {
-      console.log(error.message);
-      setLoading(false);
+      return dispatch(signInFailure(error.message));
     }
   };
   return (
@@ -86,7 +90,7 @@ const Signin = () => {
                   <span className="pl-4">Loading ....</span>
                 </>
               ) : (
-                "Sign Up"
+                "Sign In"
               )}
             </Button>
           </form>

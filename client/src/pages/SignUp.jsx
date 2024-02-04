@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import axios  from "axios";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
@@ -12,32 +13,65 @@ const SignUp = () => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!formData.username || !formData.email || !password) {
+  //     return setErrorMessage("Please fill out all fields.");
+  //   }
+  //   try {
+  //     setLoading(true);
+  //     setErrorMessage(false);
+  //     const res = await fetch("/api/auth/signup", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(formData),
+  //     });
+  //     const data = await res.json();
+  //     if (data.success === false) {
+  //       return setErrorMessage(data.message);
+  //     }
+  //     setLoading(false);
+  //     if (res.ok) {
+  //       navigate("/home");
+  //     }
+  //   } catch (error) {
+  //     console.log(error.message);
+  //     setLoading(false);
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.username || !formData.email || !password) {
-      return setErrorMessage("Please fill out all fields.");
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage('Please fill out all fields.');
     }
+  
     try {
       setLoading(true);
-      setErrorMessage(false);
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      setErrorMessage(null);
+  
+      const response = await axios.post('/api/auth/signup', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
-      const data = await res.json();
+  
+      const data = response.data;
+  
       if (data.success === false) {
         return setErrorMessage(data.message);
       }
+  
       setLoading(false);
-      if (res.ok) {
-        navigate("/home");
+  
+      if (response.status >= 200 && response.status < 300) {
+        navigate('/sign-in');
       }
     } catch (error) {
-      console.log(error.message);
+      setErrorMessage(error.message);
       setLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen mt-20">
       <div className="flex mx-auto max-w-4xl p-4 flex-col md:flex-row md:items-center gap-4">
