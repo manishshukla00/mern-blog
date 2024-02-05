@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
+import path from "path";
 
 dotenv.config();
 
@@ -15,6 +16,8 @@ mongoose
     console.log(error);
   });
 
+const __dirname = path.resolve();
+
 const app = express();
 app.use(express.json());
 
@@ -26,6 +29,12 @@ app.listen(3000, () => {
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+
+app.get("*", (req, res) => {
+  return res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;

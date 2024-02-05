@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
-import axios  from "axios";
+import axios from "axios";
+import Oauth from "../components/Oauth";
 
 const SignUp = () => {
   const [formData, setFormData] = useState({});
@@ -42,29 +43,29 @@ const SignUp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.username || !formData.email || !formData.password) {
-      return setErrorMessage('Please fill out all fields.');
+      return setErrorMessage("Please fill out all fields.");
     }
-  
+
     try {
       setLoading(true);
       setErrorMessage(null);
-  
-      const response = await axios.post('/api/auth/signup', formData, {
+
+      const response = await axios.post("/api/auth/signup", formData, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
-  
+
       const data = response.data;
-  
+
       if (data.success === false) {
         return setErrorMessage(data.message);
       }
-  
+
       setLoading(false);
-  
+
       if (response.status >= 200 && response.status < 300) {
-        navigate('/sign-in');
+        navigate("/sign-in");
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -132,6 +133,7 @@ const SignUp = () => {
                 "Sign Up"
               )}
             </Button>
+            <Oauth />
           </form>
           <div className="flex gap-2 text-sm mt-4">
             <span>Have an account?</span>
