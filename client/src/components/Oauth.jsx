@@ -18,8 +18,7 @@ const Oauth = () => {
     provider.setCustomParameters({ prompt: "select_account" });
     try {
       const resultsFromGoogle = await signInWithPopup(auth, provider);
-
-      const response = await axios.post(
+      const res = await axios.post(
         "/api/auth/google",
         {
           name: resultsFromGoogle.user.displayName,
@@ -32,16 +31,17 @@ const Oauth = () => {
           },
         }
       );
-      const data = await res.json();
-      if (res.ok) {
+      const data = await res.data;
+      console.log(data);
+      if (data) {
         dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      // Handle errors
-      console.error("Error during POST request:", error);
+      console.log(error);
     }
   };
+
   return (
     <Button
       type="button"
