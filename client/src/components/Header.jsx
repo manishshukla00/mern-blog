@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
-// import { toggleTheme } from "../redux/theme/themeSlice";
+import { toggleTheme } from "../redux/theme/themeSlice";
 import { signoutSuccess } from "../redux/user/userSlice";
 import { useEffect, useState } from "react";
 
@@ -13,7 +13,7 @@ export default function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
-  // const { theme } = useSelector((state) => state.theme);
+  const { theme } = useSelector((state) => state.theme);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -55,9 +55,9 @@ export default function Header() {
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
       >
         <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
-          Sahand's
+          View
         </span>
-        Blog
+        Blogs
       </Link>
       <form onSubmit={handleSubmit}>
         <TextInput
@@ -79,7 +79,7 @@ export default function Header() {
           pill
           onClick={() => dispatch(toggleTheme())}
         >
-          {/* {theme === "light" ? <FaSun /> : <FaMoon />} */}
+          {theme === "light" ? <FaSun /> : <FaMoon />}
         </Button>
         {currentUser ? (
           <Dropdown
